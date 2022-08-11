@@ -223,6 +223,3 @@ php7-pear-net_idna2-0.2.0-r1
 php7-pear-auth_sasl-1.1.0-r0
 php7-pear-net_smtp-doc-1.8.0-r1
 ```
-
-###### Licence
-[MIT](https://opensource.org/licenses/MIT)
