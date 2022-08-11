@@ -1,5 +1,56 @@
 # docker-compose-lnmp-swoole
-快速搭建 lump 环境
+
+This repository contains a little `docker-compose` configuration to start a `LEMP (Linux, Nginx, MariaDB, PHP)` stack.
+
+Example PHP-FPM & Nginx setup for Docker, build on [Alpine Linux](http://www.alpinelinux.org/).
+The image is only +/- 35MB large.
+
+* Built on the lightweight and secure Alpine Linux distribution
+* Very small Docker image size (+/-35MB)
+* Uses latest PHP version for better performance, lower CPU usage & memory footprint
+* Optimized for 100 concurrent requests (optimized for container with limit 0.25 vcpu, 512 mb)
+* Optimized for building micro RESTful API
+* The servers Nginx, PHP-FPM and supervisord run under a non-privileged user (nobody) to make it more secure
+* The logs of all the services are redirected to the output of the Docker container (visible with `docker logs -f <container name>`)
+* Follows the KISS principle (Keep It Simple, Stupid) to make it easy to understand and adjust the image to your needs
+
+## Details
+
+The following versions are used.
+
+* PHP 7.4 (FPM) - With MySQLi driver optionally (Uncomment line from php.Dockerfile)
+* Nginx 1.22.0
+* MariaDB 10.8.3
+* mysql   5.7
+
+## Configuration
+
+You can also set the following environment variables, for example in the included `.env` file:
+
+
+## Running
+Start the server using the following command inside the directory you just cloned: `docker-compose up`.
+
+```sh
+docker-compose up -d
+
+docker-compose up
+
+```
+## Entering the containers
+
+You can use the following command to enter a container:
+
+Where `{CONTAINER_NAME}` is one of:
+
+`docker exec -ti {CONTAINER_NAME} /bin/bash`
+
+* `{APP_NAME}-php`
+* `{APP_NAME}-nginx`
+* `{APP_NAME}-mariadb`
+
+
+
 ##### Other php7 packages available in repository
 
 ```sh

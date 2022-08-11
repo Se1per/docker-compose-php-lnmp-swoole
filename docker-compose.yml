@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  php:
+    build:
+      #拉取远程仓库中的镜像
+      context: ./php 
+    container_name: ${CONTAINER_NAME_PREFIX}-php
+    expose:
+      - 9000
+    volumes:
+      - ${PATH}/app:/var/www/html:rw
+      #挂载php配置文件
+      - ${PATH}/php/conf:/etc/php7
+      #挂载php日志
+      - ${PATH}/php/logs:/var/log/php
+    stdin_open: true
+    tty: true
+    depends_on:
+      - redis
+      - db
+    networks:
+      - app_net
+  nginx:
+    # image: nginx:${NGINX_TAG}
+    image: nginx:${NGINX_TAG}-alpine
+    container_name: ${CONTAINER_NAME_PREFIX}-nginx
+    # 挂载宿主机端口8030
+    ports:
+      - "${NGINX_PORT}:80"
+      - "443:443"
+    volumes:
+      # 挂载nginx目录
+      - ${PATH}/app:/var/www/html:rw
+      # 挂载nginx日志
+      - ${PATH}/nginx/logs:/var/log/nginx:rw
+      # 挂载nginx配置文件
+      - ${PATH}/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      # 挂载虚拟主机配置文件
+      - ${PATH}/nginx/conf/conf.d:/etc/nginx/conf.d/:ro
+      # 映射ssl
+      - ${PATH}/nginx/certs:/etc/nginx/certs/:ro
+    environment:
+      - TZ=Asia/Shanghai
+    depends_on:
+      - php
+    restart: always
+    networks:
+      - app_net
+  db:
+    image: ${DB_NAME}
+    container_name: ${CONTAINER_NAME_PREFIX}-mysql
+    # 暴露端口
+    ports:
+      - "${MYSQL_PORT}:3306"
+    # 数据库数据挂载
+    volumes:
+      - ${PATH}/mysql/init:/docker-entrypoint-initdb.d
+      - ${PATH}/mysql/data:/var/lib/mysql
+      - ${PATH}/mysql/logs:/var/log/mysql
+      - ${PATH}/mysql/my.cnf:/etc/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    networks:
+      - app_net
+  redis:
+    image: redis:${REDIS_TAG}
+    container_name: ${CONTAINER_NAME_PREFIX}-redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - ${PATH}/redis/conf:/etc/redis
+      - ${PATH}/redis/data:/data
+    command: redis-server /etc/redis/redis.conf
+    restart: always
+    networks:
+      - app_net
+      
+networks: 
+    app_net: 

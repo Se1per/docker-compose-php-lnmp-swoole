@@ -1,0 +1,139 @@
+FROM alpine:3.15
+
+LABEL maintainer="japool" version="1.0" license="MIT"
+
+ARG work_dir=/var/www/html
+
+ENV PHP_VERSION=7.4.8 \
+    PKG_CONFIG_VERSION=0.29.2 \
+    PHPZIP_VERSION=1.19.0 \
+    PHPREDIS_VERSION=5.3.1 \
+	PHPIZE_DEPS="autoconf dpkg-dev c-ares-dev dpkg file g++ gcc libxml2-dev openssl-dev sqlite-dev curl-dev libzip-dev libpng libpng-dev oniguruma-dev libc-dev make pkgconf re2c pcre-dev pcre2-dev zlib zlib-dev libtool automake"
+	#make libc-dev gcc libxml2-dev openssl-dev sqlite-dev curl-dev oniguruma-dev autoconf libzip-dev libpng-dev 
+
+# Libs
+#apt 镜像更新
+RUN apk update \
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS libaio-dev libstdc++ openssl bash gettext-dev
+
+# Install PHP
+RUN wget https://www.php.net/distributions/php-${PHP_VERSION}.tar.gz -O php.tar.gz \
+	&& tar -zxvf php.tar.gz \
+	&& cd php-${PHP_VERSION}/ \
+	&& ./configure  --prefix=/usr/local/php \
+	--with-config-file-scan-dir=/usr/local/php/conf.d \
+	--with-curl \
+	--with-mysqli \
+	--with-openssl \
+	--with-pdo-mysql \
+	--enable-gd \
+	--enable-fpm \
+	--with-fpm-user=www-data \
+	--with-fpm-group=www-data \
+	--enable-bcmath \
+	--enable-xml \
+	--enable-mbstring \
+	--enable-pcntl \
+	--enable-sockets \
+	--enable-opcache \
+	&& make && make install \
+	&& export PATH=/usr/local/php/bin:/usr/local/php/sbin/:/etc/init.d/:$PATH \
+	&& cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf \
+	&& cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf \
+	&& cp ./php.ini-production /usr/local/php/lib/php.ini \
+	&& cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm \
+	&& chmod a+x /etc/init.d/php-fpm \
+	&& cd .. \
+	&& rm -rf php-*
+#Install PHP extension
+	# # Install zip extension
+	# && wget http://pecl.php.net/get/zip \
+	# && tar -zxvf zip \
+	# && cd zip-${PHPZIP_VERSION}/ \
+	# && phpize \
+	# && ./configure --with-php-config=/usr/local/php/bin/php-config \
+	# && make && make install \
+	# && cd .. \
+	# && rm -rf zip* \
+	# && echo 'extension=zip.so' >> /usr/local/php/lib/php.ini \
+	# Install redis extension
+	# && wget https://pecl.php.net/get/redis-${PHPREDIS_VERSION}.tgz -O redis.tgz \
+	# && tar -zxvf redis.tgz \
+	# && cd redis-${PHPREDIS_VERSION} \
+	# && phpize \
+	# && ./configure --with-php-config=/usr/local/php/bin/php-config \
+	# && make && make install \
+	# && cd .. \
+	# && rm -rf redis-* \
+	# && echo 'extension=redis.so' >> /usr/local/php/lib/php.ini
+# PHP Library
+#apt 镜像更新
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+#安装php 以及常规扩展
+RUN apk update \
+    && apk add --no-cache \
+    php7-bcmath \
+    php7-bz2 \
+    php7-calendar \
+    php7-curl \
+    php7-ctype \
+    php7-dba \
+    php7-dom \
+    php7-exif \
+    php7-gettext \
+    php7-gd \
+    php7-odbc \
+    php7-gmp \
+    php7-iconv \
+    php7-json \
+    php7-mbstring \
+    php7-mysqli  \
+    php7-mcrypt \
+    php7-mysqlnd \
+    php7-openssl \
+    php7-pdo \
+    php7-pdo_mysql \
+    php7-pdo_sqlite \
+    php7-phar \
+    php7-posix \
+    php7-redis \
+    php7-shmop \
+    php7-sqlite3  \
+    php7-soap  \
+    php7-sockets \
+    php7-sodium \
+    php7-sysvshm \
+    php7-sysvmsg \
+    php7-sysvsem \
+    php7-zip \
+    php7-zlib \
+    php7-xml \
+    php7-xmlreader \
+    php7-xmlwriter \
+    php7-xsl \
+    php7-pcntl \
+    php7-opcache \
+    && ln -sf /usr/bin/php7 /usr/bin/php \
+    && apk del --purge *-dev \
+    && rm -rf /var/cache/apk/* /tmp/* /usr/share/man /usr/share/php7 \
+    && php -v \
+    && php -m 
+# composer
+
+
+#安装php其他扩展
+RUN cd /tmp \
+    # && curl -SL "https://github.com/swoole/swoole-src/archive/${SWOOLE_VERSION}.tar.gz" -o swoole.tar.gz \ 
+    && pecl install --configureoptions 'enable-sockets="yes" enable-openssl="yes" enable-http2="yes" enable-mysqlnd="yes" enable-swoole-json="yes" enable-swoole-curl="yes" enable-cares="yes"' https://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz \
+    && echo "memory_limit=1G" > /etc/php7/conf.d/00_default.ini \
+    && echo "opcache.enable_cli = 'On'" >> /etc/php7/conf.d/00_opcache.ini \
+    && echo "extension=swoole.so" > /etc/php7/conf.d/50_swoole.ini \
+    && echo "swoole.use_shortname = 'Off'" >> /etc/php7/conf.d/50_swoole.ini
+# xlswriter
+RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" > /etc/apk/repositories \
+    && apk add --no-cache php7-pecl-xlswriter
+
+EXPOSE 9000
+
+CMD ["/etc/init.d/php-fpm", "start"]
