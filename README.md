@@ -50,6 +50,70 @@ Where `{CONTAINER_NAME}` is one of:
 * `{APP_NAME}-mariadb`
 
 
+#### PHP extensions included:
+```sh
+$ php -m
+[PHP Modules]
+bcmath
+bz2
+calendar
+Core
+ctype
+curl
+date
+dba
+dom
+exif
+filter
+gd
+gettext
+gmp
+hash
+iconv
+igbinary
+json
+libxml
+mbstring
+mcrypt
+mysqli
+mysqlnd
+odbc
+openssl
+pcntl
+pcre
+PDO
+pdo_mysql
+pdo_sqlite
+Phar
+phpdbg_webhelper
+posix
+readline
+redis
+Reflection
+session
+shmop
+soap
+sockets
+sodium
+SPL
+sqlite3
+standard
+swoole
+sysvmsg
+sysvsem
+sysvshm
+xlswriter
+xml
+xmlreader
+xmlwriter
+xsl
+Zend OPcache
+zip
+zlib
+
+[Zend Modules]
+Zend OPcache
+```
 
 ##### Other php7 packages available in repository
 
