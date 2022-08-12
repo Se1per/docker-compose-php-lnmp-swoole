@@ -55,10 +55,10 @@ services:
       - "${MYSQL_PORT}:3306"
     # 数据库数据挂载
     volumes:
-      - ${PATH}/mysql/init:/docker-entrypoint-initdb.d
-      - ${PATH}/mysql/data:/var/lib/mysql
-      - ${PATH}/mysql/logs:/var/log/mysql
-      - ${PATH}/mysql/my.cnf:/etc/my.cnf
+      - ${PATH}/db/${DB_PATH}/init:/docker-entrypoint-initdb.d
+      - ${PATH}/db/${DB_PATH}/data:/var/lib/mysql
+      - ${PATH}/db/${DB_PATH}/logs:/var/log/mysql
+      - ${PATH}/db/${DB_PATH}/my.cnf:/etc/my.cnf
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -69,7 +69,7 @@ services:
     networks:
       - app_net
   redis:
-    image: redis:${REDIS_TAG}
+    image: redis:${REDIS_TAG}-alpine
     container_name: ${CONTAINER_NAME_PREFIX}-redis
     ports:
       - "${REDIS_PORT}:6379"
