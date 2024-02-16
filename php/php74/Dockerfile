@@ -130,7 +130,8 @@ RUN cd /tmp \
     && echo "extension=swoole.so" > /etc/php7/conf.d/50_swoole.ini \
     && echo "swoole.use_shortname = 'Off'" >> /etc/php7/conf.d/50_swoole.ini
 # xlswriter
-    && pecl install xlswriter
+    && pecl install xlswriter \
+    && echo "extension=swoole.so" > /etc/php7/conf.d/50_swoole.ini \
 #RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" > /etc/apk/repositories \
 #    && apk add --no-cache php7-pecl-xlswriter
 
