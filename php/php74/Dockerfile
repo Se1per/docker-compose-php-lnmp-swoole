@@ -34,7 +34,7 @@ ENV PHPIZE_DEPS="autoconf dpkg-dev dpkg file g++ gcc php7-dev php7-pear libc-dev
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 #apt 镜像更新
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' > /etc/apk/repositories
 
 #安装php 以及常规扩展
 RUN apk update \
@@ -119,7 +119,7 @@ RUN apk update \
 RUN apk add --no-cache libstdc++ openssl bash \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS libaio-dev openssl-dev curl-dev c-ares-dev 
 
-    # swoole
+# swoole
 RUN cd /tmp \
     && wget http://pear.php.net/go-pear.phar -O go-pear.php \
     && php go-pear.php \
@@ -129,10 +129,11 @@ RUN cd /tmp \
     && echo "opcache.enable_cli = 'On'" >> /etc/php7/conf.d/00_opcache.ini \
     && echo "extension=swoole.so" > /etc/php7/conf.d/50_swoole.ini \
     && echo "swoole.use_shortname = 'Off'" >> /etc/php7/conf.d/50_swoole.ini
-
 # xlswriter
-RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" > /etc/apk/repositories \
-    && apk add --no-cache php7-pecl-xlswriter
+    && pecl install xlswriter
+#RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" > /etc/apk/repositories \
+#    && apk add --no-cache php7-pecl-xlswriter
+
 # 配置compose 源
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
