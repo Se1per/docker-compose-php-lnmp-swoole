@@ -1,6 +1,6 @@
 # docker-compose-lnmp-php7&8-swoole
 
-This repository contains a little `docker-compose` configuration to start a `LEMP (Linux, Nginx, MariaDB, PHP)` stack.
+This repository contains a little `docker-compose` configuration to start a `LEMP (Linux, Nginx, MariaDB, PHP,redis,portainer)` stack.
 
 Example PHP-FPM & Nginx setup for Docker, build on [Alpine Linux](http://www.alpinelinux.org/).
 The image is only +/- 35MB large.
@@ -14,14 +14,16 @@ The image is only +/- 35MB large.
 * The logs of all the services are redirected to the output of the Docker container (visible with `docker logs -f <container name>`)
 * Follows the KISS principle (Keep It Simple, Stupid) to make it easy to understand and adjust the image to your needs
 
-## Details
+#### Details
 
 The following versions are used.
 
-* PHP 7.4 (FPM) - With MySQLi driver optionally (Uncomment line from php.Dockerfile)
-* PHP 8.0.13 (FPM) - With MySQLi driver optionally (Uncomment line from php.Dockerfile)
-* Nginx 1.22.0
-* MariaDB 10.8.3 & mysql:5.7
+1. php 8.0.13 && 7.4
+2. Swoole 4.8.11
+3. nginx 1.22.0
+4. mariadb:10.8.3 && mysql:5.7(可选)
+5. redis 6.0.7
+6. portainer latest
 
 #### Structure directory
 ~~~
