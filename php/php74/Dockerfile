@@ -18,9 +18,10 @@ WORKDIR /var/www/html
 
 RUN wget https://mirrors.aliyun.com/composer/composer.phar \
     && mv composer.phar  /usr/local/bin/composer \
-    && chmod +x /usr/local/bin/composer 
+    && chmod +x /usr/local/bin/composer \
 
-# 时区更新
+# 时区更新 # http://mirrors.aliyun.com/alpine/v3.16/community/
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g'  /etc/apk/repositories
 RUN apk add -U tzdata \
     && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && apk del tzdata

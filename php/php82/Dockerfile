@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.19
 
 LABEL maintainer="japool" version="1.0" license="MIT"
 
@@ -19,15 +19,15 @@ RUN wget https://mirrors.aliyun.com/composer/composer.phar \
     && mv composer.phar  /usr/local/bin/composer \
     && chmod +x /usr/local/bin/composer
 
-# 时区更新 # http://mirrors.aliyun.com/alpine/v3.16/community/
+# 时区更新 # http://mirrors.aliyun.com/alpine/v3.19/community/
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g'  /etc/apk/repositories
 RUN apk add -U tzdata \
 && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 && apk del tzdata
 
 #安装依赖扩展
-ENV PHPIZE_DEPS="autoconf dpkg-dev dpkg file g++ gcc php8-dev php8-pear libc-dev make pkgconf re2c pcre-dev pcre2-dev zlib-dev libtool automake openssh libmcrypt-dev" \
-    SWOOLE_VERSION=${SWOOLE_VERSION:-"5.1.0"}
+ENV PHPIZE_DEPS="autoconf dpkg-dev dpkg file g++ gcc php82-dev php82-pear libc-dev make pkgconf re2c pcre-dev pcre2-dev zlib-dev libtool automake openssh libmcrypt-dev" \
+SWOOLE_VERSION=${SWOOLE_VERSION:-"5.1.0"}
 
 #安装php 以及常规扩展
 RUN apk update \
@@ -40,67 +40,68 @@ RUN apk update \
     xz \
     libressl \
     tzdata \
-    php8 \
-    php8-fpm \
-    php8-apache2 \
-    php8-bcmath \
-    php8-bz2 \
-    php8-calendar \
-    php8-curl \
-    php8-ctype \
-    php8-dba \
-    php8-dbg \
-    php8-doc \
-    php8-dom \
-    php8-fileinfo \
-    php8-exif \
-    php8-gettext \
-    php8-gmp \
-    php8-iconv \
-    php8-gd \
-    php8-json \
-    php8-mbstring \
-    php8-mysqli  \
-    php8-mysqlnd \
-    php8-odbc \
-    php8-opcache \
-    php8-openssl \
-    php8-pcntl \
-    php8-pdo \
-    php8-pdo_dblib \
-    php8-pdo_mysql \
-    php8-pdo_odbc \
-    php8-pdo_pgsql \
-    php8-pdo_sqlite \
-    php8-pear \
-    php8-pecl-amqp \
-    php8-pecl-mcrypt \
-    php8-pecl-memcache \
-    php8-pecl-memcached \
-    php8-pecl-mongodb \
-    php8-pecl-redis \
-    php8-pecl-ssh2 \
-    php8-phar \
-    php8-session \
-    php8-shmop \
-    php8-posix \
-    php8-soap  \
-    php8-sockets \
-    php8-sodium \
-    php8-simplexml \
-    php8-tokenizer \
-    php8-sqlite3  \
-    php8-sysvshm \
-    php8-sysvmsg \
-    php8-sysvsem \
-    php8-zip \
-    php8-xml \
-    php8-xmlreader \
-    php8-xmlwriter \
-    php8-xsl \
-    && ln -sf /usr/bin/php8 /usr/bin/php \
+    php82 \
+    php82-fpm \
+    php82-apache2 \
+    php82-bcmath \
+    php82-bz2 \
+    php82-calendar \
+    php82-curl \
+    php82-ctype \
+    php82-dba \
+    php82-dbg \
+    php82-doc \
+    php82-dom \
+    php82-fileinfo \
+    php82-exif \
+    php82-gettext \
+    php82-gmp \
+    php82-iconv \
+    php82-gd \
+    php82-json \
+    php82-mbstring \
+    php82-mysqli  \
+    php82-mysqlnd \
+    php82-odbc \
+    php82-opcache \
+    php82-openssl \
+    php82-pcntl \
+    php82-pdo \
+    php82-pdo_dblib \
+    php82-pdo_mysql \
+    php82-pdo_odbc \
+    php82-pdo_pgsql \
+    php82-pdo_sqlite \
+    php82-pear \
+    php82-pecl-amqp \
+    php82-pecl-mcrypt \
+    php82-pecl-memcache \
+    php82-pecl-memcached \
+    php82-pecl-mongodb \
+    php82-pecl-redis \
+    php82-pecl-ssh2 \
+    php82-pecl-xlswriter \
+    php82-phar \
+    php82-session \
+    php82-shmop \
+    php82-posix \
+    php82-soap  \
+    php82-sockets \
+    php82-sodium \
+    php82-simplexml \
+    php82-tokenizer \
+    php82-sqlite3  \
+    php82-sysvshm \
+    php82-sysvmsg \
+    php82-sysvsem \
+    php82-zip \
+    php82-xml \
+    php82-xmlreader \
+    php82-xmlwriter \
+    php82-xsl \
+    && ln -sf /usr/bin/php82 /usr/bin/php \
     && apk del --purge *-dev \
-    && rm -rf /var/cache/apk/* /tmp/* /usr/share/man /usr/share/php8 \
+    && rm -rf /var/cache/apk/* /tmp/* /usr/share/man /usr/share/php82 \
     && php -v \
     && php -m
 
@@ -114,19 +115,14 @@ RUN cd /tmp \
     && php go-pear.php \
     # && curl -SL "https://github.com/swoole/swoole-src/archive/${SWOOLE_VERSION}.tar.gz" -o swoole.tar.gz \
     && pecl install --configureoptions 'enable-sockets="yes" enable-openssl="yes" enable-http2="yes" enable-mysqlnd="yes" enable-swoole-json="yes" enable-swoole-curl="yes" enable-cares="yes"' https://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz \
-    && echo "memory_limit=1G" > /etc/php8/conf.d/00_default.ini \
-    && echo "opcache.enable_cli = 'On'" >> /etc/php8/conf.d/00_opcache.ini \
-    && echo "extension=swoole.so" > /etc/php8/conf.d/50_swoole.ini \
-    && echo "swoole.use_shortname = 'Off'" >> /etc/php8/conf.d/50_swoole.ini \
-    # xlswriter
-    && pecl install xlswriter \
-
-#RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" > /etc/apk/repositories \
-#&& apk add --no-cache php8-pecl-xlswriter
+    && echo "memory_limit=1G" >> /etc/php82/conf.d/00_default.ini \
+    && echo "opcache.enable_cli = 'On'" >> /etc/php82/conf.d/00_opcache.ini \
+    && echo "extension=swoole.so" >> /etc/php82/conf.d/50_swoole.ini \
+    && echo "swoole.use_shortname = 'Off'" >> /etc/php82/conf.d/50_swoole.ini \
 
 # 配置compose 源
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 EXPOSE 9000
 
-CMD ["php-fpm8", "-F"]
+CMD ["php-fpm82", "-F"]
