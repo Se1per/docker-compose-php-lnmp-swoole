@@ -49,11 +49,17 @@ cp docker-compose.yml.example82 docker-compose.yml
 ~~~
 docker-compose up -d 
 ~~~
-5. 项目文件夹 app内含有 数据库和redis，phpinfo得连接测试
+打开浏览器测试访问
+~~~
+http://localhost 
+http://localhost/index.php 
+http://localhost/redis.php 
+http://localhost/mysql.php 
+~~~
 
-6. 注意,需要修改的请自行根据dockerhub可以进行版本更替,具体修改和查看.env 需要先创建一级目录www,不然的话默认的配置文件映射会失效,加速使用阿里云,测试都是用阿里云节点,如果网络不好可以试试清华的节点
+5. 注意,需要修改的请自行根据dockerhub可以进行版本更替,具体修改和查看.env 需要先创建一级目录www,不然的话默认的配置文件映射会失效,加速使用阿里云,测试都是用阿里云节点,如果网络不好可以试试清华的节点
 
-7. 新增portainer 自己直接访问地址 9030 端口进行访问
+6. 新增portainer 自己直接访问地址 9030 端口进行访问
 
 #### 使用说明
 1. 使用 docker exec -ti {CONTAINER_NAME} /bin/bash 可以查看容器内详细信息
