@@ -4,7 +4,7 @@
 docker-compose 快速简单部署 lnmp 环境，扩展齐全，含有 swoole，php8和nginx dockerFile和镜像都使用alpine。
 
 #### 默认安装版本
-1. php 8.0.13 && 7.4
+1. php 8.0.13 && 7.4 && 8.2.15 (可选)
 2. Swoole 4.8.11
 3. nginx 1.22.0
 4. mariadb:10.8.3 && mysql:5.7(可选)
@@ -27,29 +27,35 @@ docker-compose.yml           # docker-compose 文件
 
 1. 需要安装docker , 安装docker-compose
 2. 在liunx 下 ./ 创建文件夹www, 克隆仓库到www 文件夹内
+3. 注意克隆仓库得路径是 /www
 ~~~
-克隆仓库
-# 注意克隆仓库得路径是 /www 
 git clone git@github.com:Se1per/docker-compose-php-lnmp-swoole.git ./www
+~~~
+4. 项目根目录下
 
+php7.4
 ~~~
-3. 项目根目录下
+cp docker-compose.yml.example74 docker-compose.yml
 ~~~
-第一步:
-php 7 版本执行: cp docker-compose.yml.example74 docker-compose.yml
-php 8 版本执行: cp docker-compose.yml.example8 docker-compose.yml
+php8.0
 ~~~
+cp docker-compose.yml.example8 docker-compose.yml
+~~~
+php8.2.15
+~~~
+cp docker-compose.yml.example82 docker-compose.yml
+~~~
+运行docker-compose 
 ~~~
 docker-compose up -d 
 ~~~
 5. 项目文件夹 app内含有 数据库和redis，phpinfo得连接测试
 
-7. 注意,需要修改的请自行根据dockerhub可以进行版本更替,具体修改和查看.env 需要先创建一级目录www,不然的话默认的配置文件映射会失效,加速使用阿里云,测试都是用阿里云节点,如果网络不好可以试试清华的节点
+6. 注意,需要修改的请自行根据dockerhub可以进行版本更替,具体修改和查看.env 需要先创建一级目录www,不然的话默认的配置文件映射会失效,加速使用阿里云,测试都是用阿里云节点,如果网络不好可以试试清华的节点
 
-7.新增portainer 自己直接访问地址 9030 端口进行访问
+7. 新增portainer 自己直接访问地址 9030 端口进行访问
 
 #### 使用说明
-
 1. 使用 docker exec -ti {CONTAINER_NAME} /bin/bash 可以查看容器内详细信息
 2. 安装配置文件参考 .env 文件 。自定义配置版本选择,或者自己去dockerhub 找对应镜像
 3. 安装 docker 教程地址：https://www.runoob.com/docker/centos-docker-install.html

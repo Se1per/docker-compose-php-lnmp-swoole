@@ -18,10 +18,10 @@ The image is only +/- 35MB large.
 
 The following versions are used.
 
-1. php 8.0.13 && 7.4
+1. php 8.0.13 && 7.4 && 8.2.15 (option)
 2. Swoole 4.8.11
 3. nginx 1.22.0
-4. mariadb:10.8.3 && mysql:5.7(可选)
+4. mariadb:10.8.3 && mysql:5.7 (option)
 5. redis 6.0.7
 6. portainer latest
 
@@ -50,9 +50,13 @@ php7.4
 cp docker-compose.yml.example74 docker-compose.yml
 ~~~
 
-php8
+php8.0
 ~~~
 cp docker-compose.yml.example8 docker-compose.yml
+~~~
+php8.2.15
+~~~
+cp docker-compose.yml.example82 docker-compose.yml
 ~~~
 
 start-up
